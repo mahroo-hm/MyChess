@@ -1,0 +1,3 @@
+/Users/macbook/Documents/VSC/MyChess/CMakeFiles/MyChess.dir
+/Users/macbook/Documents/VSC/MyChess/CMakeFiles/edit_cache.dir
+/Users/macbook/Documents/VSC/MyChess/CMakeFiles/rebuild_cache.dir
