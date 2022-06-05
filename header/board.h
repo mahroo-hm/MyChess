@@ -1,19 +1,25 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "piece.h"
 #include "vector"
+#include "piece.h"
+#include "essentials.h"
+#include <SFML/Graphics.hpp>
+
 using namespace std;
+using namespace sf;
 
 
 
 class Board {
 public:
     Piece board[8][8];
-    Board();
-    void setBoard(string** inpBoard);
+    RenderWindow* window;
+    Board() = default;
     Board (string** board);
+
     Piece getPiece(int x, int y);
+    void setBoard(string** inpBoard);
     bool isPointValid(int x, int y);
     vector<pair<int, int> > getValidMoves(Piece p);
     vector<Piece> getPieces(char color);
@@ -24,6 +30,7 @@ public:
     vector<pair<int, int> > getQueenMoves(Piece p);
     vector<pair<int, int> > getKnightMoves(Piece p);
     vector<pair<int, int> > getPawnMoves(Piece p);
+    void draw();
 };
 
 #endif

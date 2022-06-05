@@ -1,19 +1,32 @@
 #include "board.h"
-#include "piece.h"
 #include "iostream"
 
 using namespace std;
+using namespace sf;
 
-Piece board[8][8];
-
-Board::Board (string** board) {
+Board::Board (string** board){
     this->setBoard(board);
 }
 
 void Board::setBoard(string** inpBoard) {
     for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++) 
+        for (int j = 0; j < 8; j++){
+            board[i][j].rect.setSize(Vector2f(200, 200));
+            board[i][j].rect.setPosition(getCellPosition(i, j));
+            board[i][j].rect.setFillColor(cellColor);
             board[i][j] = *(new Piece(inpBoard[i][j][1], inpBoard[i][j][0], i, j));
+            //board[i][j].sprite.setPosition(this->board[i][j].)
+        }
+}
+
+void Board::draw() {
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++) {
+            window->draw(this->board[i][j].rect);
+            if (this->board[i][j].type != '-')
+                this->window->draw(this->board[i][j].sprite);
+        }
+    //this->window->draw(this->board[i][j]->status);
 }
 
 Piece Board::getPiece(int x, int y) {

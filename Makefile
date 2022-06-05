@@ -48,19 +48,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CMake.app/Contents/bin/cmake
+CMAKE_COMMAND = /snap/cmake/1088/bin/cmake
 
 # The command to remove a file.
-RM = /Applications/CMake.app/Contents/bin/cmake -E rm -f
+RM = /snap/cmake/1088/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/macbook/Documents/VSC/MyChess
+CMAKE_SOURCE_DIR = /home/mahroohm/Desktop/MyChess
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/macbook/Documents/VSC/MyChess
+CMAKE_BINARY_DIR = /home/mahroohm/Desktop/MyChess
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/macbook/Documents/VSC/MyChess
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/Applications/CMake.app/Contents/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/snap/cmake/1088/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Applications/CMake.app/Contents/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/snap/cmake/1088/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/macbook/Documents/VSC/MyChess/CMakeFiles /Users/macbook/Documents/VSC/MyChess//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mahroohm/Desktop/MyChess/CMakeFiles /home/mahroohm/Desktop/MyChess//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/macbook/Documents/VSC/MyChess/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mahroohm/Desktop/MyChess/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +129,149 @@ MyChess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/build
 .PHONY : MyChess/fast
 
-source/chess.o: source/chess.cpp.o
-.PHONY : source/chess.o
+source/board.o: source/board.cpp.o
+.PHONY : source/board.o
 
 # target to build an object file
-source/chess.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/chess.cpp.o
-.PHONY : source/chess.cpp.o
+source/board.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/board.cpp.o
+.PHONY : source/board.cpp.o
 
-source/chess.i: source/chess.cpp.i
-.PHONY : source/chess.i
+source/board.i: source/board.cpp.i
+.PHONY : source/board.i
 
 # target to preprocess a source file
-source/chess.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/chess.cpp.i
-.PHONY : source/chess.cpp.i
+source/board.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/board.cpp.i
+.PHONY : source/board.cpp.i
 
-source/chess.s: source/chess.cpp.s
-.PHONY : source/chess.s
+source/board.s: source/board.cpp.s
+.PHONY : source/board.s
 
 # target to generate assembly for a file
-source/chess.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/chess.cpp.s
-.PHONY : source/chess.cpp.s
+source/board.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/board.cpp.s
+.PHONY : source/board.cpp.s
+
+source/critical.o: source/critical.cpp.o
+.PHONY : source/critical.o
+
+# target to build an object file
+source/critical.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/critical.cpp.o
+.PHONY : source/critical.cpp.o
+
+source/critical.i: source/critical.cpp.i
+.PHONY : source/critical.i
+
+# target to preprocess a source file
+source/critical.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/critical.cpp.i
+.PHONY : source/critical.cpp.i
+
+source/critical.s: source/critical.cpp.s
+.PHONY : source/critical.s
+
+# target to generate assembly for a file
+source/critical.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/critical.cpp.s
+.PHONY : source/critical.cpp.s
+
+source/essentials.o: source/essentials.cpp.o
+.PHONY : source/essentials.o
+
+# target to build an object file
+source/essentials.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/essentials.cpp.o
+.PHONY : source/essentials.cpp.o
+
+source/essentials.i: source/essentials.cpp.i
+.PHONY : source/essentials.i
+
+# target to preprocess a source file
+source/essentials.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/essentials.cpp.i
+.PHONY : source/essentials.cpp.i
+
+source/essentials.s: source/essentials.cpp.s
+.PHONY : source/essentials.s
+
+# target to generate assembly for a file
+source/essentials.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/essentials.cpp.s
+.PHONY : source/essentials.cpp.s
+
+source/game.o: source/game.cpp.o
+.PHONY : source/game.o
+
+# target to build an object file
+source/game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/game.cpp.o
+.PHONY : source/game.cpp.o
+
+source/game.i: source/game.cpp.i
+.PHONY : source/game.i
+
+# target to preprocess a source file
+source/game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/game.cpp.i
+.PHONY : source/game.cpp.i
+
+source/game.s: source/game.cpp.s
+.PHONY : source/game.s
+
+# target to generate assembly for a file
+source/game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/game.cpp.s
+.PHONY : source/game.cpp.s
+
+source/main.o: source/main.cpp.o
+.PHONY : source/main.o
+
+# target to build an object file
+source/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/main.cpp.o
+.PHONY : source/main.cpp.o
+
+source/main.i: source/main.cpp.i
+.PHONY : source/main.i
+
+# target to preprocess a source file
+source/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/main.cpp.i
+.PHONY : source/main.cpp.i
+
+source/main.s: source/main.cpp.s
+.PHONY : source/main.s
+
+# target to generate assembly for a file
+source/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/main.cpp.s
+.PHONY : source/main.cpp.s
+
+source/piece.o: source/piece.cpp.o
+.PHONY : source/piece.o
+
+# target to build an object file
+source/piece.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/piece.cpp.o
+.PHONY : source/piece.cpp.o
+
+source/piece.i: source/piece.cpp.i
+.PHONY : source/piece.i
+
+# target to preprocess a source file
+source/piece.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/piece.cpp.i
+.PHONY : source/piece.cpp.i
+
+source/piece.s: source/piece.cpp.s
+.PHONY : source/piece.s
+
+# target to generate assembly for a file
+source/piece.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChess.dir/build.make CMakeFiles/MyChess.dir/source/piece.cpp.s
+.PHONY : source/piece.cpp.s
 
 # Help Target
 help:
@@ -162,9 +282,24 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... MyChess"
-	@echo "... source/chess.o"
-	@echo "... source/chess.i"
-	@echo "... source/chess.s"
+	@echo "... source/board.o"
+	@echo "... source/board.i"
+	@echo "... source/board.s"
+	@echo "... source/critical.o"
+	@echo "... source/critical.i"
+	@echo "... source/critical.s"
+	@echo "... source/essentials.o"
+	@echo "... source/essentials.i"
+	@echo "... source/essentials.s"
+	@echo "... source/game.o"
+	@echo "... source/game.i"
+	@echo "... source/game.s"
+	@echo "... source/main.o"
+	@echo "... source/main.i"
+	@echo "... source/main.s"
+	@echo "... source/piece.o"
+	@echo "... source/piece.i"
+	@echo "... source/piece.s"
 .PHONY : help
 
 

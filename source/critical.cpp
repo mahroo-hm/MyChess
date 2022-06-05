@@ -1,21 +1,10 @@
-#include "game.h"
+#include "critical.h"
 #include "iostream"
 
 using namespace std;
-vector <string> answer;
 
 
-string standardOutput(int fromi, int fromj, string pieceName, int toi, int toj){
-    string output;
-    output.push_back((char) fromj + 'a');
-    output.push_back((char) (7 - fromi) + '1');
-    output += pieceName;
-    output.push_back((char) toj + 'a');
-    output.push_back((char) (7 - toi) + '1');
-    return output;
-}
-
-bool case2(Game& game, char attacker, int depth = 0){
+/*bool mate(Game game, char attacker,vector < pair<Piece, pair<int, int>> > &answer, int depth){
     char defender = (attacker == 'B') ? 'W' : 'B';
     vector <pair<int, int>> validmoves;
 
@@ -28,23 +17,18 @@ bool case2(Game& game, char attacker, int depth = 0){
     int mvno = 0;
 
     for (Piece p : game.gameBoard.getPieces(game.playerTurn)) {
-        for (int i = 0; i < validmoves.size(); i++) cout << validmoves[i].first << ' ' << validmoves[i].second << " -- " << endl;
-        //validmoves.clear();
-        //cout << " name: " << p.getName();
         vector<pair<int, int> > mv = game.gameBoard.getValidMoves(p);
         
         for (int i = 0; i < mv.size(); i++) {
             bool x = game.move(p, mv[i]);
-            //cout <<"***" << " depth: "<< depth << ' ' << p.getName() << ' ' << mv[i].first << ' ' << mv[i].second << endl;
 
             if (x) {
                 mvno++;
-                //cout << " ACCEPTED " << endl;
-                bool res = case2(game, attacker, depth + 1);
+                bool res = mate(game, attacker,answer, depth + 1);
 
                 if (res && game.playerTurn != attacker) {
                     if (depth == 0)
-                        answer.push_back(standardOutput(p.x, p.y, p.getName(), mv[i].first, mv[i].second));
+                        answer.push_back(make_pair(p, mv[i]));
                     if (depth != 0) {
                         game.reverseMove();
                         return true;
@@ -55,7 +39,6 @@ bool case2(Game& game, char attacker, int depth = 0){
                     return false;
                 }
             }
-
             game.reverseMove();
         }
     }
@@ -69,7 +52,7 @@ bool case2(Game& game, char attacker, int depth = 0){
         return true;
 }
 
-bool case1(Game& game, char defender, int depth = 0){
+bool defend(Game game, char defender,vector < pair<Piece, pair<int, int>> > &answer, int depth = 0){
     char attacker = (defender == 'B') ? 'W' : 'B';
     if (game.isCheckMate(defender)) return true;
     if (game.isCheckMate(attacker)) return false;
@@ -86,9 +69,9 @@ bool case1(Game& game, char defender, int depth = 0){
 
             if (x) {
                 mvno++;
-                bool res = case1(game, defender, depth + 1);
+                bool res = defend(game, defender, answer,  depth + 1);
                 if (depth == 0 && res) {
-                    answer.push_back(standardOutput(p.x, p.y, p.getName(), mv[i].first, mv[i].second));
+                    answer.push_back(make_pair(p, mv[i]));
                 }
                 if (depth != 0) {
                     if (res && game.playerTurn != attacker) {
@@ -101,7 +84,6 @@ bool case1(Game& game, char defender, int depth = 0){
                     }
                 }
             }
-
             game.reverseMove();
         }
     }
@@ -141,3 +123,4 @@ vector<string> abreviateMoves(vector<string> moves, Game game) {
     }
     return res;
 }
+*/

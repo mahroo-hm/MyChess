@@ -1,18 +1,11 @@
 #include "piece.h"
 #include "iostream"
 
-using namespace std;
-
-
-char color;
-char type;
-int x, y;
-
 Piece::Piece(char color, char type, int x, int y) {
     this->color = color;
     this->type = type;
     this->x = x;
-    this->y= y;
+    this->y = y;
 }
 
 string Piece::getName() {
@@ -26,3 +19,12 @@ Piece* Piece::clone() {
     return new Piece(color, type, x, y);
 }
 
+/*void Piece::loadPieceImg(Piece p, string type){
+    if (p.type != '-'){
+        texture.loadFromFile(getPiecePath(p, type));
+        this->sprite.setTexture(texture);
+        float pieceScaleX = (float)cellSize / this->sprite.getTexture()->getSize().x;
+        float pieceScaleY = (float)cellSize / this->sprite.getTexture()->getSize().y;
+        this->sprite.setScale(pieceScaleX, pieceScaleY);
+    }
+}*/
