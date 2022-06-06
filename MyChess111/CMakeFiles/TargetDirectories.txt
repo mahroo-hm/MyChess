@@ -1,0 +1,3 @@
+/home/mahroohm/Desktop/MyChess/CMakeFiles/MyChess.dir
+/home/mahroohm/Desktop/MyChess/CMakeFiles/edit_cache.dir
+/home/mahroohm/Desktop/MyChess/CMakeFiles/rebuild_cache.dir
