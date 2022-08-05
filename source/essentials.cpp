@@ -1,7 +1,4 @@
 #include "essentials.h"
-#include "iostream"
-
-
 
 
 string standardOutput(int fromi, int fromj, string pieceName, int toi, int toj){
@@ -16,8 +13,8 @@ string standardOutput(int fromi, int fromj, string pieceName, int toi, int toj){
 
 Vector2f getCellPosition(int row,int column) {
     return Vector2f(
-        cellOffset + column * cellSize,
-        cellOffset + row * cellSize);
+        cellOffset + column * (cellSize),
+        cellOffset + row * (cellSize));
 }
 
 int getCellIndex(int x) {
@@ -25,7 +22,7 @@ int getCellIndex(int x) {
     if (x < 0)
         return -1;
     int index = x / cellSize;
-    if (index > 2 || x > index * cellSize + cellSize)
+    if (index > 7 || x > index * cellSize + cellSize)
         return -1;
     return index;
 }
@@ -58,9 +55,8 @@ string** restart(){
     return firstBoard;    
 }
 
-/*string getPiecePath(Piece p, string type) {
+string getPiecePath(string name) {
     string path = "resources/pieces/"; 
-    path += p.getName();
-    path += type;
+    path += name;
     return path + ".png";
-}*/
+}

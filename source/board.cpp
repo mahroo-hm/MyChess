@@ -4,29 +4,34 @@
 using namespace std;
 using namespace sf;
 
-Board::Board (string** board){
-    this->setBoard(board);
+
+Board::Board (string** board, RenderWindow* _window){
+    window = _window;
+    this->setBoard(board, window);
 }
 
-void Board::setBoard(string** inpBoard) {
+void Board::setBoard(string** inpBoard, RenderWindow* _window) {
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++){
-            board[i][j].rect.setSize(Vector2f(200, 200));
-            board[i][j].rect.setPosition(getCellPosition(i, j));
-            board[i][j].rect.setFillColor(cellColor);
             board[i][j] = *(new Piece(inpBoard[i][j][1], inpBoard[i][j][0], i, j));
-            //board[i][j].sprite.setPosition(this->board[i][j].)
         }
 }
 
-void Board::draw() {
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++) {
-            window->draw(this->board[i][j].rect);
-            if (this->board[i][j].type != '-')
-                this->window->draw(this->board[i][j].sprite);
+void Board::init(){
+    for (int i = 0; i < 8; i++){
+        for (int j = 0; j < 8; j++){
+            board[i][j].rect.setSize(sf::Vector2f(cellSize, cellSize));
+            if ((i + j) % 2 == 0)
+               board[i][j].rect.setFillColor(cellColor1);
+            else
+                board[i][j].rect.setFillColor(cellColor2);
+
+            board[i][j].rect.setPosition(getCellPosition(i, j));
+
+            if (board[i][j].type != '-')
+                board[i][j].sprite.setPosition(board[i][j].rect.getPosition());
         }
-    //this->window->draw(this->board[i][j]->status);
+    }
 }
 
 Piece Board::getPiece(int x, int y) {

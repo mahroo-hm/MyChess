@@ -8,7 +8,6 @@ set(INCLUDE_DIRECTORY header)
 
 set(SOURCES
     ${SRC_DIRECTORY}/board.cpp
-    ${SRC_DIRECTORY}/critical.cpp
     ${SRC_DIRECTORY}/essentials.cpp
     ${SRC_DIRECTORY}/game.cpp
     ${SRC_DIRECTORY}/piece.cpp)
@@ -20,9 +19,6 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIRECTORY}/main.cpp
     ${SOURCES})
     
-target_link_libraries(${PROJECT_NAME}
-    sfml-system
-    sfml-window
-    sfml-graphics)
-    
+find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
+target_link_libraries(${PROJECT_NAME} sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
     

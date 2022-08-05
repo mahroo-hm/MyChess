@@ -1,6 +1,305 @@
-#include "game.h"
+#include "iostream"
 
 using namespace std;
+#include "vector"
+
+using namespace std;
+
+
+
+class Board {
+public:
+    Piece board[8][8];
+    RenderWindow* window;
+    Board() = default;
+    Board (string** board, RenderWindow* _window);
+
+    Piece getPiece(int x, int y);
+    void setBoard(string** inpBoard, RenderWindow* _window);
+    bool isPointValid(int x, int y);
+    vector<pair<int, int> > getValidMoves(Piece p);
+    vector<Piece> getPieces(char color);
+    vector<pair<int, int> > getKingMoves(Piece p);
+    vector<pair<int, int> > getMovesByD(vector<int> dx, vector<int> dy, Piece p);
+    vector<pair<int, int> > getBishopMoves(Piece p);
+    vector<pair<int, int> > getRookMoves(Piece p);
+    vector<pair<int, int> > getQueenMoves(Piece p);
+    vector<pair<int, int> > getKnightMoves(Piece p);
+    vector<pair<int, int> > getPawnMoves(Piece p);
+    void init();
+};
+
+
+#include "iostream"
+
+using namespace std;
+
+static int cellSize = 80;
+static int cellOffset = 20;
+static Color cellColor1 = Color(163, 151, 150);
+static Color cellColor2 = Color(156, 36, 36);
+static Color defendCol = Color::Magenta;
+static Color mateCol = Color::Blue;
+static Color validMovesCol = Color::Green;
+
+string standardOutput(int fromi, int fromj, string pieceName, int toi, int toj);
+Vector2f getCellPosition(int row,int column);
+int getCellIndex(int x);
+string** restart();
+string getPiecePath(string name);
+
+#include <vector>
+
+
+using namespace std;
+using namespace sf;
+
+
+class Game{
+friend class Board;
+private:
+    vector<Piece> store;
+    bool isPointValid(int x, int y);
+
+public:
+    Board gameBoard;
+    char playerTurn;
+    char oneInCheck = 'n';
+    char oneMate = 'n';
+    Font font;
+    Text status;
+    Text error;
+    Piece selectedPiece;
+    bool pieceIsSelected;
+    RenderWindow* window;
+    vector<CircleShape> validMovesCir;
+    vector<CircleShape> critMateMovesCir;
+    vector<CircleShape> critDefendMovesCir;
+    vector < pair<Piece, pair<int, int>> > critMv;
+
+    
+    Game() = default;
+    Game(char turn, string** board, RenderWindow* _window);
+    
+    void start();
+    void draw();
+    bool isGameOver();
+    void putPieceInCell(int i, int j);
+    void mouseIsClicked(const sf::Vector2i& position);
+    //void emptyCellClicked(int i, int j);
+    void updateStatusText();
+    //void selectPiece(Piece p);
+    
+    void selectPieceAndCreateMovesCircle(Piece p);
+    void calcAndCreateCritCircle(Piece p);
+
+    int* findKing(char KingColor);
+    bool isCheck(char color);
+    bool isCheckMate(char color);
+    void changeTurns();
+    void reverseMove();
+    bool move(Piece p, pair<int, int> mv);
+    
+    bool mate(char attacker, int depth = 0);
+    bool defend(char defender, int depth = 0);
+};
+
+class Piece {
+public:
+    char color;
+    char type;
+    int x, y;
+    Sprite sprite;
+    Sprite spriteSel;
+    Sprite spriteCheck;
+    Sprite spriteMate;
+    RectangleShape rect;
+    Texture texture;
+
+    Piece() = default;
+    Piece(char color, char type, int x, int y);
+    string getName();
+    Piece* clone();
+    void setNull();
+    void loadPieceTextures();
+    void loadPieceTexturesSel();
+    void loadKingTexturesCheck();
+    void loadKingTexturesMate();
+
+};
+
+Board::Board (string** board, RenderWindow* _window){
+    window = _window;
+    this->setBoard(board, window);
+}
+
+void Board::setBoard(string** inpBoard, RenderWindow* _window) {
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++){
+            board[i][j] = *(new Piece(inpBoard[i][j][1], inpBoard[i][j][0], i, j));
+        }
+}
+
+void Board::init(){
+    for (int i = 0; i < 8; i++){
+        for (int j = 0; j < 8; j++){
+            board[i][j].rect.setSize(sf::Vector2f(cellSize, cellSize));
+            if ((i + j) % 2 == 0)
+               board[i][j].rect.setFillColor(cellColor1);
+            else
+                board[i][j].rect.setFillColor(cellColor2);
+
+            board[i][j].rect.setPosition(getCellPosition(i, j));
+
+            if (board[i][j].type != '-')
+                board[i][j].sprite.setPosition(board[i][j].rect.getPosition());
+        }
+    }
+}
+
+Piece Board::getPiece(int x, int y) {
+    return board[x][y];
+}
+
+bool Board::isPointValid(int x, int y) {
+    return x >= 0 && x < 8 && y >= 0 && y < 8; 
+}
+
+vector<pair<int, int> > Board::getValidMoves(Piece p) {
+    switch (p.type) {
+    case 'K':
+        return getKingMoves(p);
+        break;
+    case 'Q':
+        return getQueenMoves(p);
+        break;
+    case 'B':
+        return getBishopMoves(p);
+        break;
+    case 'R':
+        return getRookMoves(p);
+        break;
+    case 'N':
+        return getKnightMoves(p);
+        break;
+    case 'P':
+        return getPawnMoves(p);
+        break;
+    default:
+        pair<int, int> nullpair(0, 0);
+        vector<pair<int, int> > nullvect;
+        nullvect.push_back(nullpair);
+        return nullvect;
+        break;
+    }
+}
+
+vector<Piece> Board::getPieces(char color) {
+    vector <Piece> playerPieces;
+    for (int i = 0; i < 8; i++){
+        for (int j = 0; j < 8; j++){
+            if (board[i][j].color == color)
+                playerPieces.push_back(board[i][j]);
+        }
+    }
+    return playerPieces;
+}
+
+vector<pair<int, int> > Board::getKingMoves(Piece p) {
+    vector<pair<int, int> > mv;
+    for (int i = -1; i <= 1; i++){
+        for (int j = -1; j <= 1; j++) {
+            int nx = p.x + i, ny = p.y + j;
+            if ((i == 0 && j == 0) || !isPointValid(nx, ny) || board[nx][ny].color == p.color || board[nx][ny].type == 'K')
+                continue;
+            bool flag = true;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    int nxx = nx + i, nyy = ny + j;
+                    if (isPointValid(nxx, nyy) && board[nxx][nyy].type == 'K' && board[nxx][nyy].color != p.color) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (!flag)
+                    break;
+            }
+            if (flag)
+                mv.push_back({nx, ny});
+        }
+    }
+    return mv;
+}
+
+vector<pair<int, int> > Board::getMovesByD(vector<int> dx, vector<int> dy, Piece p) {
+    vector<pair<int, int> > mv;
+    for (int k = 0; k < dx.size(); k++)
+        for (int i = 1; i <= 8; i++) {
+            int nx = p.x + dx[k] * i, ny = p.y + dy[k] * i;
+            if (!isPointValid(nx, ny)) continue;
+            if (board[nx][ny].color == p.color || board[nx][ny].type == 'K'){
+                break;
+            }
+            mv.push_back({nx, ny});
+            if (board[nx][ny].color != '-'){
+                break;
+            }
+        }
+    return mv;
+}
+
+vector<pair<int, int> > Board::getBishopMoves(Piece p) {
+    vector<int> dx = {1, 1, -1, -1};
+    vector<int> dy = {-1, 1, 1, -1};
+    return getMovesByD(dx, dy, p);
+}
+
+vector<pair<int, int> > Board::getRookMoves(Piece p) {
+    vector<int> dx = {0, 0, 1, -1};
+    vector<int> dy = {-1, 1, 0, 0};
+    return getMovesByD(dx, dy, p);
+}
+
+vector<pair<int, int> > Board::getQueenMoves(Piece p) {
+    vector<pair<int, int>> rookMv = getRookMoves(p);
+    vector<pair<int, int>> bishopMv = getBishopMoves(p);
+    for (auto i : bishopMv){
+        rookMv.push_back(i);
+    }
+    return rookMv;
+}
+
+vector<pair<int, int> > Board::getKnightMoves(Piece p) {
+    vector<pair<int, int> > mv;
+    int dx[8] = {1, 1, 2, 2, -1, -1, -2, -2};
+    int dy[8] = {2, -2, 1, -1, 2, -2, 1, -1};
+    for (int k = 0; k < 8; k++) {
+        int nx = p.x + dx[k], ny = p.y + dy[k];
+        if (!isPointValid(nx, ny) || board[nx][ny].type == 'K' || board[nx][ny].color == p.color)
+            continue;
+        mv.push_back({nx, ny});
+    }
+    return mv;
+}
+
+vector<pair<int, int> > Board::getPawnMoves(Piece p) {
+    vector<pair<int, int> > mv;
+    for (int j = -1; j <= 1; j++) {
+        int nx = p.x + 1 + (p.color == 'W') * -2, ny = p.y + j;
+        if (isPointValid(nx, ny) && j == 0 && board[nx][ny].type == '-'){
+            if (p.x == 1 && p.color == 'B' && board[nx + 1][ny].type == '-')
+                mv.push_back({nx + 1, ny});
+            else if (p.x == 6 && p.color == 'W' && board[nx - 1][ny].type == '-')
+                mv.push_back({nx - 1, ny});
+            mv.push_back({nx, ny});
+        }
+        if (isPointValid(nx, ny) && j != 0 && board[nx][ny].color != p.color && board[nx][ny].color != '-' && board[nx][ny].type != 'K')
+            mv.push_back({nx, ny});
+    }
+    return mv;
+}
+
+
 
 Game::Game(char turn, string** board, RenderWindow* _window){
     window = _window;
@@ -433,4 +732,173 @@ bool Game::defend(char defender, int depth){
         return false;
     else
         return true;
+}
+
+
+
+
+string standardOutput(int fromi, int fromj, string pieceName, int toi, int toj){
+    string output;
+    output.push_back((char) fromj + 'a');
+    output.push_back((char) (7 - fromi) + '1');
+    output += pieceName;
+    output.push_back((char) toj + 'a');
+    output.push_back((char) (7 - toi) + '1');
+    return output;
+}
+
+Vector2f getCellPosition(int row,int column) {
+    return Vector2f(
+        cellOffset + column * (cellSize),
+        cellOffset + row * (cellSize));
+}
+
+int getCellIndex(int x) {
+    x -= cellOffset;
+    if (x < 0)
+        return -1;
+    int index = x / cellSize;
+    if (index > 7 || x > index * cellSize + cellSize)
+        return -1;
+    return index;
+}
+
+string** restart(){
+    string** firstBoard = new string*[8];
+    for (int i = 0; i < 8; i++) firstBoard[i] = new string[8];
+    firstBoard[0][0] = "RB";
+    firstBoard[0][1] = "NB";
+    firstBoard[0][2] = "BB";
+    firstBoard[0][3] = "QB";
+    firstBoard[0][4] = "KB";
+    firstBoard[0][5] = "BB";
+    firstBoard[0][6] = "NB";
+    firstBoard[0][7] = "RB";
+    for (int i = 0; i < 8; i++)
+        firstBoard[1][i] = "PB";
+    
+    firstBoard[7][0] = "RW";
+    firstBoard[7][1] = "NW";
+    firstBoard[7][2] = "BW";
+    firstBoard[7][3] = "QW";
+    firstBoard[7][4] = "KW";
+    firstBoard[7][5] = "BW";
+    firstBoard[7][6] = "NW";
+    firstBoard[7][7] = "RW";
+    for (int i = 0; i < 8; i++)
+        firstBoard[6][i] = "PW";
+
+    return firstBoard;    
+}
+
+string getPiecePath(string name) {
+    string path = "resources/"; 
+    path += name;
+    return path + ".png";
+}
+
+std::map<string, Texture> pieceTextures;
+std::map<string, Texture> pieceTexturesSel;
+std::map<string, Texture> pieceTexturesCheck;
+std::map<string, Texture> pieceTexturesMate;
+
+
+
+Piece::Piece(char color, char type, int x, int y) {
+    this->color = color;
+    this->type = type;
+    this->x = x;
+    this->y = y;
+    this->loadPieceTextures();
+    this->loadPieceTexturesSel();
+    this->loadKingTexturesCheck();
+    this->loadKingTexturesMate();
+
+}
+
+string Piece::getName() {
+    string s;
+    s.push_back(type);
+    s.push_back(color);
+    return s;
+}
+
+Piece* Piece::clone() {
+    return new Piece(color, type, x, y);
+}
+
+void Piece::setNull(){
+    this->color = '-';
+    this->type = '-';
+}
+
+void Piece::loadPieceTextures(){
+    string id = this->getName();
+    if (this->type != '-'){
+        if (pieceTextures.find(id) == pieceTextures.end())
+            pieceTextures[id].loadFromFile(getPiecePath(id));;
+        pieceTextures[id].setSmooth(true);
+        this->sprite.setTexture(pieceTextures[id]);
+        float pieceScaleX = (float)(cellSize) / (this->sprite.getTexture()->getSize().x);
+        float pieceScaleY = (float)(cellSize) / (this->sprite.getTexture()->getSize().y);
+        this->sprite.setScale(pieceScaleX, pieceScaleY);
+    }
+}
+
+void Piece::loadPieceTexturesSel(){
+    string id = this->getName();
+    id += "sel";
+    if (this->type != '-'){
+        if (pieceTexturesSel.find(id) == pieceTexturesSel.end())
+            pieceTexturesSel[id].loadFromFile(getPiecePath(id));;
+        pieceTexturesSel[id].setSmooth(true);
+        this->spriteSel.setTexture(pieceTexturesSel[id]);
+        float pieceScaleX = (float)(cellSize) / (this->spriteSel.getTexture()->getSize().x);
+        float pieceScaleY = (float)(cellSize) / (this->spriteSel.getTexture()->getSize().y);
+        this->spriteSel.setScale(pieceScaleX, pieceScaleY);
+    }
+}
+
+void Piece::loadKingTexturesCheck(){
+    string id = this->getName();
+    id += "C";
+    if (this->type != '-'){
+        if (pieceTexturesCheck.find(id) == pieceTexturesCheck.end())
+            pieceTexturesCheck[id].loadFromFile(getPiecePath(id));;
+        pieceTexturesCheck[id].setSmooth(true);
+        this->spriteCheck.setTexture(pieceTexturesCheck[id]);
+        float pieceScaleX = (float)(cellSize) / (this->spriteCheck.getTexture()->getSize().x);
+        float pieceScaleY = (float)(cellSize) / (this->spriteCheck.getTexture()->getSize().y);
+        this->spriteCheck.setScale(pieceScaleX, pieceScaleY);
+    }
+}
+
+void Piece::loadKingTexturesMate(){
+    string id = this->getName();
+    id += "M";
+    if (this->type != '-'){
+        if (pieceTexturesMate.find(id) == pieceTexturesCheck.end())
+            pieceTexturesMate[id].loadFromFile(getPiecePath(id));;
+        pieceTexturesMate[id].setSmooth(true);
+        this->spriteMate.setTexture(pieceTexturesMate[id]);
+        float pieceScaleX = (float)(cellSize) / (this->spriteMate.getTexture()->getSize().x);
+        float pieceScaleY = (float)(cellSize) / (this->spriteMate.getTexture()->getSize().y);
+        this->spriteMate.setScale(pieceScaleX, pieceScaleY);
+    }
+}
+
+
+
+using namespace sf;
+using namespace std;
+
+
+int main(){
+    
+    RenderWindow window(VideoMode(800, 700), "Moon Chess", Style::Titlebar | Style::Close);
+    string** firstBoard = restart();
+    Game game('W', firstBoard, &window);
+    game.start();
+    
+    return 0;
 }

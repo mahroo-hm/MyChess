@@ -16,10 +16,10 @@ public:
     Piece board[8][8];
     RenderWindow* window;
     Board() = default;
-    Board (string** board);
+    Board (string** board, RenderWindow* _window);
 
     Piece getPiece(int x, int y);
-    void setBoard(string** inpBoard);
+    void setBoard(string** inpBoard, RenderWindow* _window);
     bool isPointValid(int x, int y);
     vector<pair<int, int> > getValidMoves(Piece p);
     vector<Piece> getPieces(char color);
@@ -30,7 +30,7 @@ public:
     vector<pair<int, int> > getQueenMoves(Piece p);
     vector<pair<int, int> > getKnightMoves(Piece p);
     vector<pair<int, int> > getPawnMoves(Piece p);
-    void draw();
+    void init();
 };
 
 #endif
